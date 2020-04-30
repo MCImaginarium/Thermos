@@ -30,7 +30,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2.0.777'
     }
 }
 
@@ -88,7 +88,7 @@ ext.buildInfoCached = null;
 def buildInfo(String key) {
     if (!buildInfoCached) {
         if (project.hasProperty('officialBuild')) {
-            buildInfoCached = new JsonSlurper().parse(new URL("https://api.mcimaginarium.co.uk/thermos/version/?mcver=1.7.10"))
+            buildInfoCached = new JsonSlurper().parse(new URL("https://api.mcimaginarium.co.uk/thermos/version/"))
         } else {
 			buildInfoCached = [
 					nextBuildNumber: 'UNOFFICIAL',
@@ -238,7 +238,8 @@ def generateManifest(boolean legacy = false) {
             'Thermos-Group'         : project.group,
             'Thermos-Channel'       : project.name,
             'Thermos-Version'       : project.version,
-			'Thermos-Build'         : project.revision,
+			'Thermos-Build'         : project.build,
+			'Thermos-Revision'      : project.revision,
             'Thermos-Legacy'        : legacy,
 			'Thermos-Official'      : project.hasProperty('officialBuild'),
             'Implementation-Vendor' : 'MCImaginarium',
