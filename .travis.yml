@@ -1,5 +1,5 @@
 dist: trusty
-
+os: linux
 language: java
 
 jdk:
@@ -33,10 +33,10 @@ after_failure: "./travii/post_failure.sh"
 
 deploy:
   provider: releases
-  api_key: 
+  token: 
     secure: bs4gTXJqghp0LnfXiIMStG82C6NtIZWTuTHkVY+lSz0ktMSnIoLmq8YkRQooxThIHH3g9GIDZE/nCEW6wHetlkLTemrLyjIEdRmVXF13brBQv8W8J6v/o/n8qGqoEqi6AfHgsRNuBF1UqQppq8Li0VSfx4CIebipsfv7l8qycJqS76BSVfO2Z+yPL41F4Gy3JHq5ntPI6BzM6pwi3xlw0xUovvSCn4IGDPtavG4FfA6VwfU1Tbq6pg072pEzU1j2vopiMO0kKHZnJm7ZgWKz6HSP76jThkyhg+C8GNZl0MtUSJiEh8A1oLQm0nrtAesuMfznby56I1yp6o2lL7erT+Fy3eoBZlFZMS2KVHVkFjuDJU66mlSNJpRsHsXZwLsjscS9buRd4z2D+9aRmOm1r3n2dclQw2z7QZgNJXJNCGj8cFBo/IqStiuGVQwCCHGD/9713v0VeNnA/qcbVecsT9I4DyKvD6w+eevvwYq2bPX/8Pz/dtot/M8ZUbwlfDiu+Ulwzz0QMfX0kvp/nCUGd5HNN2TmfojCwJSV+eLCs2HEseEo1fwed5uQo7cm+Ccact8pb2mQxEUnU+VHiczW1BLBAQTB3sX47K2UU7YunCxlWnLCAksoSI2GACar1PVW3F/FXdygsFo0qamGsu11xac4KbIMV189NcUZF3vqo60=
   file_glob: true
-  skip_cleanup: true
+  cleanup: false
   file: "$HOME/release/*"
   on:
     repo: MCImaginarium/Thermos
