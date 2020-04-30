@@ -1,3 +1,4 @@
+echo "Building forge version 1614"
 # 1614
 cd forge
 git checkout 9274e4fe435cb415099a8216c1b42235f185443e
