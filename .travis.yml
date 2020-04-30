@@ -1,19 +1,36 @@
 dist: trusty
+
 language: java
+
 jdk:
 - oraclejdk8
+
 before_install: git submodule update --init --recursive
+
 install: echo "WOO, time to take over the world!"
+
 before_script: find .
+
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/build/distributions/"
   - "$HOME/release/"
+
+before_script: "./travii/cleanup.sh"
+
+
 script: "./travii/make.sh"
+    
+after_success: "./travii/post_success.sh"
+
+after_failure: "./travii/post_failure.sh"
+
+
 deploy:
   provider: releases
   api_key: 
