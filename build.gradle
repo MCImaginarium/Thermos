@@ -122,10 +122,24 @@ def gitInfo(String key) {
     return key ? gitInfoCached[key] : gitInfoCached;
 }
 
+public boolean isTravis() {
+  String user = System.getProperty("user.name");
+  return user.equals("travis");
+}
+
+
+
+
+
 ext.mcVersion = "1.7.10"
 ext.forgeVersion = VersionParser.parseForgeRevision(file('src/main/resources/fmlversion.properties'))
 ext.revision = project.hasProperty('revision') ? project.getProperty('revision') : buildInfo('nextBuildNumber')
-ext.build = System.getenv('BUILD_NUMBER') ? System.getenv('BUILD_NUMBER') : "Unkonwn"
+
+ext.build = isTravis() ? System.getenv('TRAVIS_BUILD_NUMBER') : buildInfo('nextBuildNumber')
+
+
+
+
 
 version = "${mcVersion}-${forgeVersion}-${revision}"
 
