@@ -71,7 +71,7 @@ public class WatchdogThread extends Thread
             {
                 Logger log = Bukkit.getServer().getLogger();
                 log.log(Level.SEVERE, "The server has stopped responding!");
-                log.log(Level.SEVERE, "Please report this to https://github.com/CyberdyneCC/Thermos/issues");
+                log.log(Level.SEVERE, "Please report this to https://github.com/MCImaginarium/Thermos/issues");
                 log.log(Level.SEVERE, "Be sure to include ALL relevant console errors and Minecraft crash reports");
                 log.log(Level.SEVERE, "Cauldron version: " + Bukkit.getServer().getVersion());
                 
@@ -122,7 +122,7 @@ public class WatchdogThread extends Thread
                 // Cauldron end
                 
                 log.log(Level.SEVERE, "------------------------------");
-                log.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Cauldron!):");
+                log.log(Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Thermos!):");
                 dumpThread(ManagementFactory.getThreadMXBean().getThreadInfo(MinecraftServer.getServer().primaryThread.getId(), Integer.MAX_VALUE), log);
                 log.log(Level.SEVERE, "------------------------------");
                 //
@@ -162,7 +162,7 @@ public class WatchdogThread extends Thread
                 }
                 if (MinecraftServer.getServer().cauldronConfig.dumpThreadsOnWarn.getValue())
                 {
-                    log.log(Level.WARNING, "Server thread dump (Look for mods or plugins here before reporting to Cauldron!):");
+                    log.log(Level.WARNING, "Server thread dump (Look for mods or plugins here before reporting to Thermos!):");
                     dumpThread(ManagementFactory.getThreadMXBean().getThreadInfo(MinecraftServer.getServer().primaryThread.getId(), Integer.MAX_VALUE), log,
                             Level.WARNING);
                 }

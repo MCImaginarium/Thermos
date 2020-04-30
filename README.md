@@ -1,20 +1,20 @@
-# Since THERMOS is no longer being developed- and servers are reduced to using Sponge for 1.8+, this project is dedicated to renewing the ability for Minecraft servers to use native bukkit plugins along with Forge mods.
+# This project is dedicated to renewing the ability for Minecraft servers to use native bukkit plugins along with Forge mods.
 
-# Contigo
+# Thermos 1.7.10 Branch
 
-![Contigo](contigo_icon.png)
+![Thermos](thermos_icon.png)
 <!--- ![Graph](http://i.mcstats.org/Thermos/Global+Statistics@2x.borderless.png) --->
 
-[![Build Status](https://travis-ci.org/djoveryde/Contigo.svg?branch=master)](https://travis-ci.org/djoveryde/Contigo)
+[![Build Status](https://travis-ci.org/mcimaginarium/Thermos.svg?branch=1.7.10)](https://travis-ci.org/mcimaginarium/Thermos)
 ![Minecraft Forge v10.13.4.1614][forge]
 ![Minecraft v1.7.10][mc]
 ![Java JDK v1.8][java]
 ![Spigot 1.7.10 Snapshot ][spigot]
 
-### What's Contigo?
-Contigo is a fork of Thermos, a craftbukkit forge server for Minecraft 1.7.10. After Thermos was discontinued, Contigo was created to allow active members of the Minecraft coding community to optimize it and provide fixes in a timely manner.
+### What's Thermos?
+Thermos is a fork of KCauldron, a craftbukkit forge server for Minecraft 1.7.10. After periods of inactivity on KCauldron's GitLab concerning major issues, Thermos was created to allow active members of the Minecraft coding community to optimize it and provide fixes in a timely manner.
 
-We hope to eliminate all issues with craftbukkit forge servers. In the end, we envision a seamless, low lag Contigo experience with support for new 1.8+ versions of Minecraft.
+We hope to eliminate all issues with craftbukkit forge servers. In the end, we envision a seamless, low lag Thermos experience.
 
 Advantages over KCauldron:
 + Lag-lowering optimizations
@@ -24,52 +24,39 @@ Advantages over KCauldron:
 
 
 ## Installation
-Click [here](http://cyberdynecc.github.io/Thermos/install)
+Click [here](https://mcimaginarium.github.io//Thermos/install)
 
-<!--- ### Downloads
-#You can download the pre-built packages from [here](https://github.com/CyberdyneCC/Thermos/releases). 
---->
-**Contigo is still in early alpha and you may encounter issues in using it with your server. You have been warned!**
+## Downloads
+You can download the pre-built packages from [here](https://github.com/mcimaginarium/Thermos/releases). 
+
+**Thermos is still in beta and you may encounter issues in using it with your server. You have been warned!**
 
 P.S. **PLEASE** look at the release notes before downloading! :smile:
 
-##Installing WarmRoast
-[Tutorial Video](https://youtu.be/c0ffjooX7Jw)
-
-## Chat
-
-Feel free to drop in on the Contigo Discord chat [here](https://discord.gg/cNpacKk)
-
 ## Contributing
 
-Please read the [guide](https://github.com/djoveryde/Contigo/blob/master/CONTRIBUTING.md) on how to contribute - Contigo always needs improvements :smile: 
+Please read the [guide](https://mcimaginarium.github.io//Thermos/contributing) on how to contribute - Thermos always needs improvements :smile: 
 
 ## Build Requirements
 * Java 8u101 JDK or higher
 * `JAVA_HOME` defined on your OS
 
-## Building djoveryde/Contigo
+
+## Setup the Workspace
 * Checkout project
   * You can use IDE or clone from console:
-  `git clone https://github.com/djoveryde/Contigo.git`
-* Setup
-  * Auto: `setup.sh`
-  * Manual:
-  `git submodule update --init --recursive`
-* Build
-  * This process downloads minecraft and apply patches
-  * If you have gradle integration in IDE - you can still use gui
-  * Auto: `build.sh`
-  * Manual:
-  `./gradlew setupCauldron jar`
-
+  `git clone https://github.com/mcimaginarium/Thermos.git`
+* Creating the workspace
+  * To create the workspace just run the command: `./gradlew setupCauldron`
+  * To create the patches with the changes made just run: `./gradlew genPatches`
+* Building
+  * Before you can build you must first setup the workspace!
+  * To build just run the command: `./gradlew jar`
+  * All builds will be in `build/distributions`
+* Updating sources
+  * Update sources: `git pull origin master`
+  * Recreate the workspace: `./gradlew clean setupCrucible`
 All builds will be in `build/distributions`
-  
-## Updating sources
-* Update sources
-  * `git pull origin master`
-* Re apply patches & build binaries
-  * `./gradlew clean setupCauldron jar`
 
 ## Known Caveats, use provided fixes at your own risk.
 
@@ -85,7 +72,6 @@ All builds will be in `build/distributions`
 
 ✔ SkinsRestorer: Latest working version is 10.4.4
 
-[Fixed]: http://gogs.tcpr.ca/TCPR/Fixes "Fixed"
 [forge]: https://img.shields.io/badge/Minecraft%20Forge-v10.13.4.1614-green.svg "Minecraft Forge v10.13.4.1614"
 [mc]: https://img.shields.io/badge/Minecraft-v1.7.10-green.svg "Minecraft 1.7.10"
 [java]: https://img.shields.io/badge/Java%20JDK-v1.8-blue.svg "Java JDK 8"

@@ -38,6 +38,7 @@ public class Thermos {
                     sServerLocation = new File(jarFilePath);
 
                     sCurrentVersion = version;
+					sCurrentRevision = manifest.getProperty("Thermos-Build");
                     sGroup = manifest.getProperty("Thermos-Group");
                     sBranch = manifest.getProperty("Thermos-Branch");
                     sChannel = manifest.getProperty("Thermos-Channel");
@@ -57,6 +58,13 @@ public class Thermos {
     public static String getCurrentVersion() {
         parseManifest();
         return sCurrentVersion;
+    }
+	
+	 private static String sCurrentRevision;
+	
+    public static String getCurrentRevision() {
+        parseManifest();
+        return sCurrentRevision;
     }
 
     private static File sServerLocation;

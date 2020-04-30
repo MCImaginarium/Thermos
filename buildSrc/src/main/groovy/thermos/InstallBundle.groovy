@@ -2,18 +2,26 @@ package thermos
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.tasks.*
 
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardOpenOption
+
 class InstallBundle extends DefaultTask {
     @InputFile
-    def File serverJar
+    File serverJar
 
     @InputFiles
-    def ConfigurableFileCollection bootstrapClasspath
+    ConfigurableFileCollection bootstrapClasspath
 
     @Input
-    def String bootstrapMain
+    String bootstrapMain
+	
+	RepositoryHandler repos
 
     InstallBundle() {
         bootstrapClasspath = project.files()
@@ -32,38 +40,27 @@ class InstallBundle extends DefaultTask {
     def install() {
         installLocation.deleteDir()
         installLocation.mkdirs()
-        new File(installLocation, "README.txt").withWriter {
-            def String jarPath = 'bin/ca/tcpr/Thermos/' << project.version << File.separator << 'Thermos-' << project.version << '.jar'
-
-            it << '''Thermos installation guide
-
-# This is Thermos from https://github.com/TCPR/Thermos
-
-# Installation and usage
-1. Unpack this zip into server directory
-2. Use following line to start the server:
-  java -Xmx1024M -jar '''
-            it << jarPath
-            it << '''
-
-  or
-
-  java -Xmx1024M -jar Thermos.jar
-
-3. Enjoy
-
-Public builds can be found at: https://tcpr.ca/downloads/thermos
-
-'''
+        def sb = new StringBuilder();
+        
+        for(def repo:repos){
+            if(repo instanceof MavenArtifactRepository){
+                if(repo.getUrl().scheme.startsWith("http"))
+                sb.append(repo.name).append('\n').append(repo.getUrl().toURL()).append("\n")
+            }
         }
-        def cp = bootstrapClasspath
+        def reposIndex = Paths.get(installLocation.canonicalPath,"KBootstrap.reposList")
+        Files.deleteIfExists(reposIndex)
+        Files.write(reposIndex, sb.toString().getBytes("UTF-8"),StandardOpenOption.CREATE_NEW)
+		
+		def cp = bootstrapClasspath
         for (int i = 0; i < 3; i++) {
             def result = project.javaexec { it ->
                 workingDir installLocation
                 classpath cp
                 main bootstrapMain
                 args '--serverDir', installLocation.canonicalPath,
-                        '--installServer', serverJar.canonicalFile
+                        '--installServer', serverJar.canonicalFile,
+						'--binDir', 'libraries'
             }
             if (result.exitValue == 0) return
         }

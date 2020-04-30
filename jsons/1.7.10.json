@@ -13,22 +13,22 @@
     {
       "name": "org.ow2.asm:asm-debug-all:5.0.3",
       "children" : ["sources"],
-      "url" : "http://repo.maven.apache.org/maven2"
+      "url" : "https://repo.maven.apache.org/maven2"
     },
     {
       "name": "org.scala-lang:scala-library:2.10.2",
       "children" : ["sources"],
-      "url" : "http://repo.maven.apache.org/maven2"
+      "url" : "https://repo.maven.apache.org/maven2"
     },
     {
       "name": "org.scala-lang:scala-compiler:2.10.2",
       "children" : ["sources"],
-      "url" : "http://repo.maven.apache.org/maven2"
+      "url" : "https://repo.maven.apache.org/maven2"
     },
     {
       "name": "net.sf.jopt-simple:jopt-simple:4.5",
       "children" : ["sources"],
-      "url" : "http://repo.maven.apache.org/maven2"
+      "url" : "https://repo.maven.apache.org/maven2"
     },
     {
       "name": "lzma:lzma:0.0.1"

@@ -3,38 +3,35 @@ import thermos.CreateChangelog
 import thermos.InstallBundle
 import thermos.VersionParser
 
+tasks.whenTaskAdded {
+    if (it.name.startsWith('publish')) it.dependsOn 'preparePublication'
+}
+
 buildscript {
     repositories {
+		jcenter()
         maven {
-            name 'prok'
-            url 'https://djoveryde.000webhostapp.com/kcauldron/files/'
+            name 'mcimaginarium'
+            url 'https://repo.mcimaginarium.co.uk/maven/'
         }
         maven {
             name 'forge'
-            url 'http://files.minecraftforge.net/maven/'
+            url 'https://files.minecraftforge.net/maven/'
         }
         maven {
             name 'sonatype'
-            url 'http://oss.sonatype.org/content/repositories/snapshots/'
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
         }
         maven {
             name 'spigot'
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
-        flatDir {
-            dirs 'libs'
-        }
         mavenCentral()
         mavenLocal()
     }
     dependencies {
-        classpath files('FGS.jar')
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
-}
-
-tasks.whenTaskAdded {
-    if (it.name.startsWith('publish')) it.dependsOn 'preparePublication'
 }
 
 task wrapper(type: Wrapper) {
@@ -46,19 +43,21 @@ apply plugin: 'cauldron'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+
 repositories {
     clear()
+	jcenter()
     maven {
-        name 'sonatype'
-        url 'http://oss.sonatype.org/content/repositories/snapshots/'
+        name 'mcimaginarium'
+        url 'https://repo.mcimaginarium.co.uk/maven/'
     }
     maven {
-        name 'prok'
-        url 'https://djoveryde.000webhostapp.com/kcauldron/files/'
+        name 'sonatype'
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
     maven {
         name 'forge'
-        url 'http://files.minecraftforge.net/maven/'
+        url 'https://files.minecraftforge.net/maven/'
     }
     maven {
         name 'minecraft'
@@ -67,10 +66,6 @@ repositories {
     maven {
         name 'spigot'
         url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-
-    flatDir {
-        dirs 'libs'
     }
  
     mavenCentral()
@@ -86,19 +81,19 @@ minecraft {
     srgExtra "PK: org/bukkit/craftbukkit org/bukkit/craftbukkit/v1_7_R4"
 }
 
-group = 'cyberdynecc'
+group = 'pw.prok'
 
 ext.buildInfoCached = null;
 
 def buildInfo(String key) {
     if (!buildInfoCached) {
         if (project.hasProperty('officialBuild')) {
-            buildInfoCached = new JsonSlurper().parse(new URL("https://th.tcpr.ca/version"))
+            buildInfoCached = new JsonSlurper().parse(new URL("https://api.mcimaginarium.co.uk/thermos/version/?mcver=1.7.10"))
         } else {
-            buildInfoCached = [
-                    nextBuildNumber: 'UNOFFICIAL',
-                    version        : 'NONE'
-            ]
+			buildInfoCached = [
+					nextBuildNumber: 'UNOFFICIAL',
+					version        : 'NONE'
+			]
         }
     }
     return key ? buildInfoCached[key] : buildInfoCached;
@@ -130,29 +125,54 @@ def gitInfo(String key) {
 ext.mcVersion = "1.7.10"
 ext.forgeVersion = VersionParser.parseForgeRevision(file('src/main/resources/fmlversion.properties'))
 ext.revision = project.hasProperty('revision') ? project.getProperty('revision') : buildInfo('nextBuildNumber')
-version = "${mcVersion}-${forgeVersion}.${revision}"
-if (project.hasProperty('officialBuild')) println "Updated Thermos version: ${version}"
+ext.build = System.getenv('BUILD_NUMBER') ? System.getenv('BUILD_NUMBER') : "Unkonwn"
+
+version = "${mcVersion}-${forgeVersion}-${revision}"
+
+ext.branch = getGitBranch()
+ext.gitHash = gitInfo("hash")
+
+def getGitBranch(){
+    def branch = gitInfo("branch")
+	
+	if (branch == null || branch == ""){
+	    branch = "Detatched Branch"
+	}
+    else if (branch.equals("master")) 
+	{
+		branch = "stable"
+	}
+	
+	return branch;
+}
+
+
+if (project.hasProperty('officialBuild'))
+{
+    println "============= Thermos Version Updated ============="
+    println "      Git Branch            : ${branch}"
+    println "      Git hash              : ${gitHash}"	
+    println "      Minecraft Version     : ${mcVersion}"
+    println "      Forge Version         : ${forgeVersion}"	
+    println "      Thermos Revision      : ${revision}"	
+    println "      Thermos Build         : ${build}"
+    println "      Thermos Version       : ${version}"
+    println "==================================================="
+}
 
 launch4j {
-    jreMinVersion = '1.7.0'
+    jreMinVersion = '1.6.0'
 }
 
 configurations {
     compile.extendsFrom exported
     libraries
     bootstrap
+	compile
 }
 
 dependencies {
-    bootstrap 'pw.prok:KBootstrap:0.2.+'
-    libraries 'pw.prok:KBootstrap:0.3.2@jar'
-    libraries 'pw.prok:Damask:0.1.2@jar'
-    libraries 'commons-cli:commons-cli:1.3@jar'
-    libraries 'org.slf4j:slf4j-simple:1.6.2@jar'
-    libraries 'org.eclipse.jetty:jetty-servlet:9.0.3.v20130506@jar'
-    libraries 'commons-io:commons-io:2.4@jar'
-    libraries 'net.sf.opencsv:opencsv:2.0@jar'
-    libraries 'com.beust:jcommander:1.30@jar'
+    bootstrap 'pw.prok:KBootstrap:0.3.3'
     libraries 'net.minecraft:launchwrapper:1.12@jar'
     libraries 'org.ow2.asm:asm-all:5.0.3'
     libraries 'com.typesafe.akka:akka-actor_2.11:2.3.3'
@@ -166,26 +186,30 @@ dependencies {
     libraries 'org.scala-lang:scala-reflect:2.11.7'
     libraries 'org.scala-lang:scala-swing:2.11.0-M7'
     libraries 'org.scala-lang:scala-xml:2.11.0-M4'
-    libraries 'net.sf.jopt-simple:jopt-simple:5.0.1'
+    libraries 'net.sf.jopt-simple:jopt-simple:4.7'
     libraries 'lzma:lzma:0.0.1'
-    libraries 'org.yaml:snakeyaml:1.9'
+    libraries 'org.yaml:snakeyaml:1.15'
     libraries 'commons-lang:commons-lang:2.6'
-    libraries 'org.avaje:ebean:2.7.3'
-    libraries 'jline:jline:2.6'
+    libraries 'org.avaje:ebean:2.8.1'
+    libraries 'jline:jline:2.12.1'
     libraries 'net.md-5:SpecialSource:1.7.4'
     libraries 'net.sourceforge.argo:argo:2.25'
+	libraries 'org.fusesource.jansi:jansi:1.8'	
     libraries 'com.googlecode.json-simple:json-simple:1.1'
     libraries 'org.xerial:sqlite-jdbc:3.7.2'
-    libraries 'mysql:mysql-connector-java:5.1.14'
+    libraries 'mysql:mysql-connector-java:5.1.42'
     libraries 'javax.persistence:persistence-api:1.0.2'
     libraries 'net.minecraft:server:1.7.10'
     libraries 'pw.prok:KImagine:0.2.0@jar'
     libraries 'org.apache.httpcomponents:httpclient:4.4.1'
-    libraries 'net.openhft:affinity:3.0.1'
-    libraries 'org.fusesource.jansi:jansi:1.11'
-	libraries 'com.koloboke:koloboke-impl-jdk8:1.0.0'
+	libraries 'colt:colt:1.2.0'
 	libraries 'java3d:vecmath:1.3.1'
-	libraries fileTree(dir: "libs", include: "*.jar")
+	libraries 'org.jetbrains.kotlin:kotlin-runtime:1.1.4-2'
+	libraries 'co.aikar:minecraft-timings:1.0.4'
+    libraries 'net.openhft:affinity:3.0.1'
+	libraries 'com.koloboke:koloboke-impl-jdk8:1.0.0'
+	compile 'org.projectlombok:lombok:1.16.18'
+	
 }
 
 packageUniversal {
@@ -214,10 +238,12 @@ def generateManifest(boolean legacy = false) {
             'Thermos-Group'         : project.group,
             'Thermos-Channel'       : project.name,
             'Thermos-Version'       : project.version,
+			'Thermos-Build'         : project.revision,
             'Thermos-Legacy'        : legacy,
-            'Implementation-Vendor' : 'CyberdyneCC',
+			'Thermos-Official'      : project.hasProperty('officialBuild'),
+            'Implementation-Vendor' : 'MCImaginarium',
             'Implementation-Title'  : project.name,
-            'Implementation-Version': project.version,
+            'Implementation-Version': '1.7.10-R0.1-SNAPSHOT',
             'Specification-Vendor'  : 'Bukkit Team',
             'Specification-Title'   : 'Bukkit',
             'Specification-Version' : '1.7.10-R0.1-SNAPSHOT',
@@ -239,7 +265,6 @@ task jar(type: Jar, dependsOn: packageUniversal) {
     from zipTree(tasks.packageUniversal.archivePath)
     manifest.attributes(generateManifest())
 }
-
 tasks.createChangelog.onlyIf { false }
 tasks.packageInstaller.onlyIf { false }
 
@@ -247,17 +272,29 @@ task packageChangelog(type: CreateChangelog) {
     onlyIf { project.hasProperty('officialBuild') }
     classifier = 'changelog'
     extension = 'txt'
-    oldChangelogUrl = "https://i.tcpr.ca/thermos/changelog.txt"
+    oldChangelogUrl = "https://api.mcimaginarium.co.uk/thermos/changelog.txt"
     hash = gitInfo('hash')
     message = gitInfo('message')
     version = project.version
+	build = project.revision
+}
+
+task api(type: Zip, dependsOn: packageUniversal){
+    setExtension('jar')
+    classifier = 'api'
+    from (zipTree(tasks.packageUniversal.archivePath)){
+        include ("org/bukkit/**")
+        include ("org/spigotmc/event/**")
+        include ("org/spigotmc/CustomTimingsHandler*")
+        exclude ("org/bukkit/craftbukkit/**")
+    }
 }
 
 task bundleStub(type: Jar) {
     classifier = 'stub'
     manifest.attributes([
             'Main-Class': 'cpw.mods.fml.relauncher.ServerLaunchWrapper',
-            'Class-Path': "bin/${project.group.replace('.', '/')}/${project.name}/${project.version}/${project.name}-${project.version}.jar"
+            'Class-Path': "libraries/${project.group.replace('.', '/')}/${project.name}/${project.version}/${project.name}-${project.version}.jar"
     ])
 }
 
@@ -265,6 +302,7 @@ task installBundle(type: InstallBundle, dependsOn: jar) {
     serverJar tasks.jar.archivePath
     bootstrapClasspath configurations.bootstrap
     bootstrapMain 'pw.prok.bootstrap.Main'
+	repos=repositories
 }
 
 task packageBundle(type: Zip, dependsOn: installBundle) {
@@ -274,11 +312,17 @@ task packageBundle(type: Zip, dependsOn: installBundle) {
     rename bundleStub.archiveName, 'Thermos.jar'
 }
 
-task signJars(type: Sign, dependsOn: [packageUniversal, packageChangelog, packageBundle, jar, 'generatePomFileForMavenPublication']) {
+task signJars(type: Sign, dependsOn: [packageUniversal, packageChangelog, jar, installBundle, 'generatePomFileForMavenPublication']) {
     sign packageUniversal
     sign packageChangelog
-    sign packageBundle
     sign jar
+}
+
+tasks.withType(Zip) { task ->
+    task.doLast {
+        ant.checksum(file: it.archivePath, algorithm: "md5")
+		ant.checksum(file: it.archivePath, algorithm: "sha1")
+    }
 }
 
 task signPom(type: Sign, dependsOn: 'generatePomFileForMavenPublication') {
@@ -296,28 +340,32 @@ def getSignatureFiles = {
     def allFiles = project.tasks.signJars.signatureFiles.collect { it }
     def signedServer = allFiles.find { it.name.contains('-server') }
     def signedChangelog = allFiles.find { it.name.contains('-changelog') }
-    def signedBundle = allFiles.find { it.name.contains('-bundle') }
-    def signedJar = (allFiles - [signedServer, signedChangelog, signedBundle])[0]
+    def signedJar = (allFiles - [signedServer, signedChangelog])[0]
     return [
             [archive: signedServer, classifier: 'server', extension: 'jar.asc'],
             [archive: signedChangelog, classifier: 'changelog', extension: 'txt.asc'],
-            [archive: signedBundle, classifier: 'bundle', extension: 'zip.asc'],
             [archive: signedJar, classifier: null, extension: 'jar.asc']
     ]
 }
 
+ 
 publishing {
     repositories {
+	    /*
         maven {
-            name 'ProK'
-            url 'https://djoveryde.000webhostapp.com/kcauldron/files/'
+            name 'mcimaginarium'
+            url 'sftp://repo.mcimaginarium.co.uk:21/maven/'
             credentials {
-                username project.hasProperty('prokRepoUsername') ? prokRepoUsername : null
-                password project.hasProperty('prokRepoPassword') ? prokRepoPassword : null
+                username project.hasProperty('mcimaginariumUsername') ? mcimaginariumUsername : null
+                password project.hasProperty('mcimaginariumPassword') ? mcimaginariumPassword : null
             }
         }
+	    */
+        maven {
+            url = mavenLocal()
+        }
     }
-
+ 
     publications {
         maven(MavenPublication) {
             getSignatureFiles().each { signature ->
@@ -332,8 +380,53 @@ publishing {
             }
             artifact packageUniversal
             artifact packageChangelog
-            artifact packageBundle
             artifact jar
+			
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+					name 'Thermos'
+                    description 'Free (as in "Free speech") Forge and Bukkit compatible Minecraft server'
+                    url 'https://github.com/MCImaginarium/Thermos'
+                    licenses {
+                        license {
+                            name 'MIT License'
+                            url 'https://raw.githubusercontent.com/MCImaginarium/Thermos/master/LICENSE'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'Prototik'
+                            name 'Sergey Shatunov'
+                            email 'me@prok.pw'
+                        }
+                        developer {
+                            id 'Terminal Access'
+                            name 'Lee Wickham'
+                            email 'lee.wickham@lee-wickham.co.uk'
+                        }
+                    }
+                    scm {
+                        url 'https://github.com/MCImaginarium/Thermos'
+                        connection 'https://github.com/MCImaginarium/Thermos.git'
+                        developerConnection 'https://github.com/MCImaginarium/Thermos.git'
+                    }
+					repositories
+					{
+					    repository {
+						    id 'mcimaginarium'
+							url 'https://mcimaginarium.co.uk/maven/'
+						}
+					}
+					distributionManagement {
+					    repository {
+						    id 'mcimaginarium'
+							url 'https://mcimaginarium.co.uk/maven/'
+						}
+					}
+                }
+            }
         }
     }
 }
@@ -344,12 +437,12 @@ tasks.generateProjectCauldron << {
 repositories {
     clear()
     maven {
-        name 'prok'
-        url 'https://djoveryde.000webhostapp.com/kcauldron/files/'
+        name 'mcimaginarium'
+        url 'https://repo.mcimaginarium.co.uk/maven/'
     }
     maven {
         name 'forge'
-        url 'http://files.minecraftforge.net/maven/'
+        url 'https://files.minecraftforge.net/maven/'
     }
     maven {
         name 'minecraft'
@@ -358,6 +451,7 @@ repositories {
     mavenCentral()
     mavenLocal()
 }
+
 dependencies {
 ''')
     configurations.libraries.resolvedConfiguration.resolvedArtifacts.collect { it.moduleVersion.id }.each { module ->
@@ -372,5 +466,12 @@ dependencies {
 task resolveAllDependencies {
     doLast {
         configurations.each { it.resolve() }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    repositories {
+        mavenCentral()
     }
 }

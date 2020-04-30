@@ -37,7 +37,8 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
 
     private boolean mHasUpdate;
     private String mCurrentVersion;
-    private String mNewVersion;
+	private String mCurrentRevision;
+	private String mNewVersion;
 
     private DefaultUpdateCallback() {
     }
@@ -52,10 +53,16 @@ public class DefaultUpdateCallback implements IVersionCheckCallback {
     @Override
     public void newVersion(String newVersion) {
         mCurrentVersion = Thermos.getCurrentVersion();
+		mCurrentRevision = Thermos.getCurrentRevision();
         mNewVersion = newVersion;
+		
         if (!mHasUpdate) {
-            Bukkit.getConsoleSender().sendMessage("New version of Thermos available: " + newVersion);
-            Bukkit.getConsoleSender().sendMessage("Download at: https://github.com/CyberdyneCC/Thermos/releases");
+			Bukkit.getConsoleSender().sendMessage("==== Current Server Information ====");
+			Bukkit.getConsoleSender().sendMessage("= Version: " + mCurrentVersion);
+			Bukkit.getConsoleSender().sendMessage("= Build: " + mCurrentRevision);
+			Bukkit.getConsoleSender().sendMessage("=====================================");
+            Bukkit.getConsoleSender().sendMessage("A new build " + newVersion + " is available: ");
+            Bukkit.getConsoleSender().sendMessage("Download at: https://github.com/MCImaginarium/Thermos/releases/tag/" + newVersion + "/");
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (hasPermission(player)) {
                     sendUpdate(player);

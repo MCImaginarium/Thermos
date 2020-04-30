@@ -81,22 +81,22 @@ public class TVersionRetriever implements Runnable, UncaughtExceptionHandler {
         try {
             HttpUriRequest request = RequestBuilder
                     .get()
-                    .setUri("http://th.tcpr.ca/thermos/version")
-                    .addParameter("version", Thermos.getCurrentVersion()).build();
+                    .setUri("https://api.mcimaginarium.co.uk/thermos/version/")
+                    .addParameter("version", Thermos.getCurrentVersion())
+					.addParameter("hostname", sServer.getHostname())
+					.addParameter("port", "" + sServer.getPort()).build();
             HttpResponse response = HttpClientBuilder.create()
                     .setUserAgent("Thermos Version Retriever")
                     .setRedirectStrategy(new LaxRedirectStrategy()).build()
                     .execute(request);
             if (response.getStatusLine().getStatusCode() != 200) {
-                uncaughtException(mThread, new IllegalStateException(
-                        "Status code isn't OK"));
+                uncaughtException(mThread, new IllegalStateException("Status code isn't OK"));
                 return;
             }
             JSONObject json = (JSONObject) sParser.parse(new InputStreamReader(
                     response.getEntity().getContent()));
             String version = (String) json.get("version");
-            if (!mUpToDateSupport || Thermos.getCurrentVersion() == null
-                    || !version.equals(Thermos.getCurrentVersion())) {
+            if (!mUpToDateSupport || Thermos.getCurrentRevision() == null || Integer.valueOf(version) > Integer.valueOf(Thermos.getCurrentRevision())) {
                 mCallback.newVersion(version);
             } else {
                 mCallback.upToDate();

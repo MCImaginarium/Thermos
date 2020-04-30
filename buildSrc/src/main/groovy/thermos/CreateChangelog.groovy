@@ -19,9 +19,11 @@ public class CreateChangelog extends AbstractArchiveTask {
     @Input
     def String message
     @Input
+    def String build
+    @Input
     def String version
     @Input
-    def String format = "# <version>: <hash>\n<message>\n\n"
+    def String format = "Build <build>:\n\tGit Hash: <hash>\n\t<message>\n\n"
 
     @Override
     FileCollection getSource() {
@@ -45,7 +47,7 @@ public class CreateChangelog extends AbstractArchiveTask {
                 try {
                     def newMessage = '';
                     message.eachLine { newMessage += '   ' + it + '\n' }
-                    def append = format.replace('<version>', version).replace('<hash>', hash).replace('<message>', message)
+                    def append = format.replace('<build>', build).replace('<hash>', hash).replace('<message>', message)
                     def changelog = append + oldChangelog;
                     archivePath.write(changelog.trim(), 'utf-8')
                     return new SimpleWorkResult(true);

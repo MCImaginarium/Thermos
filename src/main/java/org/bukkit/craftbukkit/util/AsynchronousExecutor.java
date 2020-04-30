@@ -266,7 +266,7 @@ public final class AsynchronousExecutor<P, T, C, E extends Throwable> {
             // Cauldron start - Print debug info for QueuedChunk and avoid crash
             //throw new IllegalStateException("Unknown " + parameter);
             System.out.println("Unknown " + parameter);
-            System.out.println("This should not happen. Please report this error to Cauldron dev team.");
+            System.out.println("This should not happen. Please report this error to the Thermos dev team.");
             return false;
             // Cauldron end
         }

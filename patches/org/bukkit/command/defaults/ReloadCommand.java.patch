@@ -23,7 +23,7 @@
          Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
 +      }
 +      else
-+        sender.sendMessage(ChatColor.RED + "Reload not allowed on a Cauldron server.");
++        sender.sendMessage(ChatColor.RED + "Reload not allowed on a Thermos server.");
 +        // Cauldron end
  
          return true;

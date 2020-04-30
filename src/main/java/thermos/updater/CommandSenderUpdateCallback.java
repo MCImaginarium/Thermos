@@ -41,9 +41,9 @@ public class CommandSenderUpdateCallback implements IVersionCheckCallback {
     public static void newVersion(CommandSender sender, String currentVersion,
             String newVersion) {
         sender.sendMessage(new String[] {
-                ChatColor.RED + "[Thermos] " + ChatColor.GRAY + "Found new version of Thermos: " + newVersion,
+                ChatColor.RED + "[Thermos] " + ChatColor.GRAY + "Found a new build of Thermos: " + newVersion,
                 ChatColor.RED + "[Thermos] " + ChatColor.GRAY + "Current version is: " + currentVersion,
-                ChatColor.RED + "[Thermos] " + ChatColor.GREEN + "Download at: https://github.com/CyberdyneCC/Thermos/releases" });
+                ChatColor.RED + "[Thermos] " + ChatColor.GREEN + "Download at: https://github.com/MCImaginarium/Thermos/releases/tag/" + newVersion + "/" });
     }
 
     @Override

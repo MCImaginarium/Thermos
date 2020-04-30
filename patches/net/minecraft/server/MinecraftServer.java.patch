@@ -607,7 +607,7 @@
  
 +        if (!file1.isFile())
 +        {
-+        	System.out.println("Hey, you don't have a server icon! Try out one of Thermos' Icon Generators at https://github.com/CyberdyneCC/ThermosIconGenerators !");
++        	System.out.println("You don't have a server icon set!");
 +        }
 +
          if (file1.isFile())
