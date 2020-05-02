@@ -27,11 +27,10 @@ script: "./travii/make.sh"
 
 deploy:
   provider: releases
-  github_token: $GITHUB_TOKEN
+  token: $GITHUB_TOKEN
   file_glob: true
   file: "$HOME/release/*"
-  skip_cleanup: true
-  keep_history: true
+  cleanup: false
   draft: false
   on:
     repo: MCImaginarium/Thermos
