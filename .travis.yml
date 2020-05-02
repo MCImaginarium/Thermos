@@ -2,13 +2,15 @@ dist: trusty
 os: linux
 language: java
 jdk: oraclejdk8
-sudo: false
 
 before_install: git submodule update --init --recursive
 
-install: echo "WOO, time to take over the world!"
+install: echo "Ready to Build Thermos!"
 
-before_script: find .
+before_script: 
+ - find .
+ - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+
 
 before_cache:
 - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -19,9 +21,6 @@ cache:
   - "$HOME/.gradle/wrapper/"
   - "$HOME/build/distributions/"
   - "$HOME/release/"
-
-before_script: "./travii/cleanup.sh"
-
 
 script: "./travii/make.sh"
     

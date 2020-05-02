@@ -82,7 +82,6 @@ public class TVersionRetriever implements Runnable, UncaughtExceptionHandler {
             HttpUriRequest request = RequestBuilder
                     .get()
                     .setUri("https://api.mcimaginarium.co.uk/thermos/version/")
-                    .addParameter("version", Thermos.getCurrentVersion())
 					.addParameter("hostname", sServer.getHostname())
 					.addParameter("port", "" + sServer.getPort()).build();
             HttpResponse response = HttpClientBuilder.create()
@@ -95,9 +94,9 @@ public class TVersionRetriever implements Runnable, UncaughtExceptionHandler {
             }
             JSONObject json = (JSONObject) sParser.parse(new InputStreamReader(
                     response.getEntity().getContent()));
-            String version = (String) json.get("version");
-            if (!mUpToDateSupport || Thermos.getCurrentRevision() == null || Integer.valueOf(version) > Integer.valueOf(Thermos.getCurrentRevision())) {
-                mCallback.newVersion(version);
+            String revisionNumber = (String) json.get("revisionNumber");
+            if (!mUpToDateSupport || Thermos.getCurrentRevision() == null || Integer.valueOf(revisionNumber) > Integer.valueOf(Thermos.getCurrentRevision())) {
+                mCallback.newVersion(revisionNumber);
             } else {
                 mCallback.upToDate();
             }

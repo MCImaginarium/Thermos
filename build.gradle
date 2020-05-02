@@ -2,6 +2,7 @@ import groovy.json.JsonSlurper
 import thermos.CreateChangelog
 import thermos.InstallBundle
 import thermos.VersionParser
+import thermos.VersionSetter
 
 tasks.whenTaskAdded {
     if (it.name.startsWith('publish')) it.dependsOn 'preparePublication'
@@ -98,8 +99,7 @@ def buildInfo(String key) {
             buildInfoCached = new JsonSlurper().parse(new URL("https://api.mcimaginarium.co.uk/thermos/version/"))
         } else {
 			buildInfoCached = [
-					nextBuildNumber: 'UNOFFICIAL',
-					version        : 'NONE'
+					nextRevisionNumber         : 'X'
 			]
         }
     }
@@ -114,7 +114,7 @@ def gitInfo(String key) {
             gitInfoCached = [
                     hash    : ['git', 'log', "--format=%h", '-n', '1'].execute().text.trim(),
                     fullHash: ['git', 'log', "--format=%H", '-n', '1'].execute().text.trim(),
-                    branch  : System.getenv("CI_BUILD_REF_NAME") ?: ['git', 'symbolic-ref', '--short', 'HEAD'].execute().text.trim(),
+                    branch  : System.getenv("BRANCH") ?: ['git', 'symbolic-ref', '--short', 'HEAD'].execute().text.trim(),
                     message : ['git', 'log', "--format=%B", '-n', '1'].execute().text.trim()
             ]
         } else {
@@ -136,11 +136,10 @@ public boolean isTravis() {
 
 def getGitBranch() {
     def branch = gitInfo("branch")
-	
     if (branch.equals("master")) {
 		branch = "Stable"
 	}
-    else if (branch.equals("(*.)-dev") || branch.equals("(*.)-Dev")) {
+    else if (branch.contains("-dev") || branch.contains("-Dev")) {
 		branch = "Dev"
 	}
 	else {
@@ -148,43 +147,23 @@ def getGitBranch() {
 	}
 	return branch;
 }
-
-ext.mcVersion = "1.7.10"
-ext.forgeVersion = VersionParser.parseForgeVersion(file('forge/src/main/java/net/minecraftforge/common/ForgeVersion.java'), file('src/main/resources/fmlversion.properties'))
-ext.revision = project.hasProperty('revision') ? project.getProperty('revision') : buildInfo('nextBuildNumber')
-
-if (isOfficial() && isTravis()) {
-	ext.build = System.getenv('TRAVIS_BUILD_NUMBER')
-}
-else if (isOfficial() == false && isTravis()) {
-	ext.build = 'System.getenv('TRAVIS_BUILD_NUMBER')-SNAPSHOT'
-}
-else if (isOfficial() == false && isTravis() == false) {
-	ext.build = 'X-SNAPSHOT'
-}
-else if (isOfficial() && isTravis() == false) {
-	ext.build = 'SNAPSHOT'
-}
-else {
-	ext.build = 'X-SNAPSHOT'
-}
-
 ext.branch = getGitBranch()
 ext.gitHash = gitInfo("hash")
+ext.mcVersion = minecraft.version
+ext.forgeVersion = VersionParser.parseForgeVersion(file('forge/src/main/java/net/minecraftforge/common/ForgeVersion.java'), file('src/main/resources/fmlversion.properties'))
+ext.nextRevisionNumber = buildInfo('nextRevisionNumber')
 
-version = "${mcVersion}-${forgeVersion}-${branch}-${revision}-${build}"
-
-if (isOfficial()){
-    println "============= Thermos Version Updated ============="
-    println "      Git Branch            : ${branch}"
-    println "      Git hash              : ${gitHash}"	
-    println "      Minecraft Version     : ${mcVersion}"
-    println "      Forge Version         : ${forgeVersion}"	
-    println "      Thermos Revision      : ${revision}"	
-    println "      Thermos Build         : ${build}"
-    println "      Thermos Version       : ${version}"
-    println "==================================================="
+if (isOfficial() && isTravis()) {
+	ext.nextBuildNumber = System.getenv('TRAVIS_BUILD_NUMBER')
 }
+else if (isOfficial() == false && isTravis()) {
+	ext.nextBuildNumber = 'System.getenv('TRAVIS_BUILD_NUMBER')-SNAPSHOT'
+}
+else {
+	ext.nextBuildNumber = 'SNAPSHOT'
+}
+
+version = "${mcVersion}-${forgeVersion}-${branch}-${nextRevisionNumber}-${nextBuildNumber}"
 
 launch4j {
     jreMinVersion = '1.6.0'
@@ -263,8 +242,8 @@ def generateManifest(boolean legacy = false) {
             'Thermos-Group'         : project.group,
             'Thermos-Channel'       : project.name,
             'Thermos-Version'       : project.version,
-			'Thermos-Build'         : project.build,
-			'Thermos-Revision'      : project.revision,
+			'Thermos-Build'         : project.nextBuildNumber,
+			'Thermos-Revision'      : project.nextRevisionNumber,
             'Thermos-Legacy'        : legacy,
 			'Thermos-Official'      : isOfficial(),
             'Implementation-Vendor' : 'MCImaginarium',
@@ -278,6 +257,12 @@ def generateManifest(boolean legacy = false) {
             'Main-Class'            : 'cpw.mods.fml.relauncher.ServerLaunchWrapper',
             'Class-Path'            : generateClasspath(legacy)
     ]
+}
+
+task setForgeBuildNumber(type: VersionSetter) {
+	forgeBuild forgeBuildNumber
+	forgeVersionFile = file('forge/src/main/java/net/minecraftforge/common/ForgeVersion.java')
+	forgeModLoaderVersionFile = file('src/main/resources/fmlversion.properties')
 }
 
 tasks.packageUniversal {
@@ -303,7 +288,7 @@ task packageChangelog(type: CreateChangelog) {
     hash = gitInfo('hash')
     message = gitInfo('message')
     version = project.version
-	build = project.revision
+	build = project.nextBuildNumber
 }
 
 task api(type: Zip, dependsOn: packageUniversal) {
