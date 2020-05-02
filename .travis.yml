@@ -41,4 +41,4 @@ jobs:
       draft: false
       on:
         repo: MCImaginarium/Thermos
-        tags: true
+        branch: master
