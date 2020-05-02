@@ -1,4 +1,4 @@
-echo ""
+cho ""
 echo "==================== Debug Info ==================="
 echo "                Cleaning up Directories            "
 echo "==================================================="
@@ -15,7 +15,7 @@ echo "Building Server version for forge build 1614"
 ./gradlew --parallel -PofficialBuild -PforgeBuildNumber='1614' clean setupCauldron installbundle
 echo "Done!"
 echo ""
-echo "Moving all 1614 server jar's to the releace folder..."
+echo "Moving 1614 server jar to the releace folder..."
 cp build/distributions/Thermos*server.jar $HOME/release/
 echo "Done!"
 echo ""
@@ -26,7 +26,7 @@ echo ""
 if [ ! -f $HOME/release/libraries.zip ]; then
 	echo "Building library zip archive..."
 	cd build/bundle/
-	rm -rf libraries/pw.prok/Thermos
+	rm -rf libraries/pw/prok/Thermos
 	zip -r libraries.zip libraries
 	echo "Done!"
 	echo ""
@@ -53,7 +53,7 @@ echo "Building Server version for forge build 1558"
 ./gradlew --parallel -PofficialBuild -PforgeBuildNumber='1558' clean setupCauldron jar
 echo "Done!"
 echo ""
-echo "Moving all 1558 server jar's to the releace folder..."
+echo "Moving 1558 server jar to the releace folder..."
 cp build/distributions/Thermos*server.jar $HOME/release/
 echo "Done!"
 echo ""
