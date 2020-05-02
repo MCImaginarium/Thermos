@@ -163,7 +163,7 @@ else {
 	ext.nextBuildNumber = 'SNAPSHOT'
 }
 
-version = "${mcVersion}-${forgeVersion}-${branch}-${nextRevisionNumber}-${nextBuildNumber}"
+version = "${mcVersion}-${forgeVersion}-${nextRevisionNumber}-${nextBuildNumber}"
 
 launch4j {
     jreMinVersion = '1.6.0'

@@ -1,4 +1,17 @@
 echo ""
+echo "==================== Debug Info ==================="
+echo "                Cleaning up Directories            "
+echo "==================================================="
+echo ""
+ls -lsa $HOME/release/
+ls -lsa $HOME/build/
+
+mkdir -p $HOME/release
+echo "Deleting all files in the releaces folder.."
+rm -rf $HOME/release/*
+ls -lsa $HOME/release/
+
+echo ""
 echo "================== Build Thermos =================="
 echo "              Build Forge 1614 Version             "
 echo "==================================================="
