@@ -3,14 +3,9 @@ echo "==================== Debug Info ==================="
 echo "                Cleaning up Directories            "
 echo "==================================================="
 echo ""
-ls -lsa $HOME/release/
-ls -lsa $HOME/build/
-
 mkdir -p $HOME/release
 echo "Deleting all files in the releaces folder.."
 rm -rf $HOME/release/*
-ls -lsa $HOME/release/
-
 echo ""
 echo "================== Build Thermos =================="
 echo "              Build Forge 1614 Version             "
@@ -21,7 +16,7 @@ echo "Building Server version for forge build 1614"
 echo "Done!"
 echo ""
 echo "Moving all 1614 server jar's to the releace folder..."
-cp --verbose  build/distributions/Thermos*server.jar $HOME/release/
+cp build/distributions/Thermos*server.jar $HOME/release/
 echo "Done!"
 echo ""
 echo "================== Build Thermos =================="
@@ -30,12 +25,14 @@ echo "==================================================="
 echo ""
 if [ ! -f $HOME/release/libraries.zip ]; then
 	echo "Building library zip archive..."
-	rm -rf build/bundle/libraries/pw.prok/Thermos
-	zip -r build/bundle/libraries.zip build/bundle/libraries
+	cd build/bundle/
+	rm -rf libraries/pw.prok/Thermos
+	zip -r libraries.zip libraries
 	echo "Done!"
 	echo ""
 	echo "Moving library zip archive to release folder..."
-	cp build/bundle/libraries.zip $HOME/release
+	cp libraries.zip $HOME/release
+	cd ../..
 	echo "Done!"
 else 
     echo "Library files alredy exist in target foler, nothing further to do."
@@ -57,7 +54,7 @@ echo "Building Server version for forge build 1558"
 echo "Done!"
 echo ""
 echo "Moving all 1558 server jar's to the releace folder..."
-cp --verbose  build/distributions/Thermos*server.jar $HOME/release/
+cp build/distributions/Thermos*server.jar $HOME/release/
 echo "Done!"
 echo ""
 echo "================== Build Thermos =================="
