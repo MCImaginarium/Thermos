@@ -28,7 +28,7 @@
      public int bigMushroomsPerChunk;
      public boolean generateLakes;
 +    private final List<Chunk> chunksToUnload = new ArrayList<Chunk>(); // Spigot
-+private final java.util.concurrent.locks.ReentrantLock decorateLock = new java.util.concurrent.locks.ReentrantLock(); // Thermos - prevent decorator crashes
++    private final java.util.concurrent.locks.ReentrantLock decorateLock = new java.util.concurrent.locks.ReentrantLock(); // Thermos - prevent decorator crashes
      private static final String __OBFID = "CL_00000164";
  
      public BiomeDecorator()
@@ -44,9 +44,9 @@
 -        {
 +      int ct = 0;
 +      int timeOut = MinecraftServer.getServer().thermosConfig.getInt("common.decorateTimeout");
-+      while(decorateLock.isLocked())
++      while(decorateLock.isLocked()  && !decorateLock.isHeldByCurrentThread())
 +      {
-+          try { Thread.sleep(100L); } catch(Exception e) {} finally { ct++; }
++          try { Thread.sleep(100L); } catch(Exception ignored) {} finally { ct++; }
 +          if(ct > timeOut) {
 +              throw new RuntimeException("Generating a chunk in world " + this.currentWorld.getWorldInfo().getWorldName() +" took longer than " + timeOut/10 + "seconds, Thermos needs to crash so the server won't time out...sorry!\n"
 +              		+ "You can rise up the timeout limit in the Thermos config");
