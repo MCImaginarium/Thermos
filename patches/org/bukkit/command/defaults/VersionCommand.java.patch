@@ -44,7 +44,7 @@
      }
  
      private void describeToSender(Plugin plugin, CommandSender sender) {
-+	sender.sendMessage("Author: Fracica");
++	sender.sendMessage("Authors: " + getAuthors(desc));
 +/*
          PluginDescriptionFile desc = plugin.getDescription();
          sender.sendMessage(ChatColor.GREEN + desc.getName() + ChatColor.WHITE + " version " + ChatColor.GREEN + desc.getVersion());
@@ -60,7 +60,7 @@
 -        StringBuilder result = new StringBuilder();
 -        List<String> authors = desc.getAuthors();
 -
-+        return "Fracica";
++        return "McImaginarium";
 +/*
          for (int i = 0; i < authors.size(); i++) {
              if (result.length() > 0) {
