@@ -44,7 +44,7 @@
      }
  
      private void describeToSender(Plugin plugin, CommandSender sender) {
-+	sender.sendMessage("Authors: " + getAuthors(desc));
++	sender.sendMessage("Authors: McImaginarium");
 +/*
          PluginDescriptionFile desc = plugin.getDescription();
          sender.sendMessage(ChatColor.GREEN + desc.getName() + ChatColor.WHITE + " version " + ChatColor.GREEN + desc.getVersion());
