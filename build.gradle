@@ -166,7 +166,7 @@ else {
 version = "${mcVersion}-${forgeVersion}-${nextRevisionNumber}-${nextBuildNumber}"
 
 launch4j {
-    jreMinVersion = '1.6.0'
+    jreMinVersion = '1.8.0'
 }
 
 configurations {
@@ -213,6 +213,7 @@ dependencies {
 	libraries 'co.aikar:minecraft-timings:1.0.4'
     libraries 'net.openhft:affinity:3.0.1'
 	libraries 'com.koloboke:koloboke-impl-jdk8:1.0.0'
+	libraries 'it.unimi.dsi:fastutil:8.2.2'
 	compile 'org.projectlombok:lombok:1.16.18'
 }
 

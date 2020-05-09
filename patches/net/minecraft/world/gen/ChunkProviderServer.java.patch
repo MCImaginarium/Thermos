@@ -100,7 +100,7 @@
      public boolean chunkExists(int p_73149_1_, int p_73149_2_)
      {
 -        return this.loadedChunkHashMap.containsItem(ChunkCoordIntPair.chunkXZ2Int(p_73149_1_, p_73149_2_));
-+        return this.loadedChunkHashMap_KC.rawThermos().get(p_73149_1_, p_73149_2_) != null; //Thermos Replacement
++        return this.loadedChunkHashMap_KC.rawThermosMap().get(p_73149_1_, p_73149_2_) != null; //Thermos Replacement
      }
  
 -    public List func_152380_a()
@@ -112,7 +112,7 @@
      public void unloadChunksIfNotNearSpawn(int p_73241_1_, int p_73241_2_)
      {
 +        // PaperSpigot start - Asynchronous lighting updates
-+        Chunk chunk = this.loadedChunkHashMap_KC.rawThermos().get(p_73241_1_, p_73241_2_); //Thermos replacement
++        Chunk chunk = this.loadedChunkHashMap_KC.rawThermosMap().get(p_73241_1_, p_73241_2_); //Thermos replacement
 +        // Thermos don't light modded chunks
 +        boolean modFlag = false;
 +        try { if (chunk.worldObj.isModded == null) chunk.worldObj.isModded = false; modFlag = chunk.worldObj.isModded;} catch(Exception e){}
@@ -133,7 +133,7 @@
              {
 -                this.chunksToUnload.add(Long.valueOf(ChunkCoordIntPair.chunkXZ2Int(p_73241_1_, p_73241_2_)));
 +                this.chunksToUnload.add(p_73241_1_, p_73241_2_);
-+                Chunk c = (this.loadedChunkHashMap_KC.rawThermos().get(p_73241_1_, p_73241_2_)); //Thermos replacement
++                Chunk c = (this.loadedChunkHashMap_KC.rawThermosMap().get(p_73241_1_, p_73241_2_)); //Thermos replacement
 +
 +                if (c != null)
 +                {
@@ -149,7 +149,7 @@
 -            this.chunksToUnload.add(Long.valueOf(ChunkCoordIntPair.chunkXZ2Int(p_73241_1_, p_73241_2_)));
 +            // CraftBukkit start
 +            this.chunksToUnload.add(p_73241_1_, p_73241_2_);
-+            Chunk c = (this.loadedChunkHashMap_KC.rawThermos().get(p_73241_1_, p_73241_2_)); //KCauldron replacement
++            Chunk c = (this.loadedChunkHashMap_KC.rawThermosMap().get(p_73241_1_, p_73241_2_)); //KCauldron replacement
 +
 +            if (c != null)
 +            {
@@ -175,7 +175,7 @@
 -            this.unloadChunksIfNotNearSpawn(chunk.xPosition, chunk.zPosition);
 -        }
 +    public Chunk getChunkIfLoaded(int x, int z) {
-+    	return this.loadedChunkHashMap_KC.rawThermos().get(x,z); //Thermos replacement
++    	return this.loadedChunkHashMap_KC.rawThermosMap().get(x,z); //Thermos replacement
      }
  
      public Chunk loadChunk(int p_73158_1_, int p_73158_2_)
@@ -187,7 +187,7 @@
 -        this.chunksToUnload.remove(Long.valueOf(k));
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(k);
 +        this.chunksToUnload.remove(par1, par2);
-+        Chunk chunk = this.loadedChunkHashMap_KC.rawThermos().get(par1,par2); //Thermos replacement
++        Chunk chunk = this.loadedChunkHashMap_KC.rawThermosMap().get(par1,par2); //Thermos replacement
 +        boolean newChunk = false;
          AnvilChunkLoader loader = null;
  
@@ -209,7 +209,7 @@
 -        this.chunksToUnload.remove(Long.valueOf(k));
 -        Chunk chunk = (Chunk)this.loadedChunkHashMap.getValueByKey(k);
 +        this.chunksToUnload.remove(p_73158_1_, p_73158_2_);
-+        Chunk chunk = this.loadedChunkHashMap_KC.rawThermos().get(p_73158_1_, p_73158_2_); //Thermos replacement
++        Chunk chunk = this.loadedChunkHashMap_KC.rawThermosMap().get(p_73158_1_, p_73158_2_); //Thermos replacement
 +        boolean newChunk = false; // CraftBukkit
  
          if (chunk == null)
@@ -293,7 +293,7 @@
 -        return chunk == null ? (!this.worldObj.findingSpawnPoint && !this.loadChunkOnProvideRequest ? this.defaultEmptyChunk : this.loadChunk(p_73154_1_, p_73154_2_)) : chunk;
 +
 +        // CraftBukkit start
-+        Chunk chunk = (Chunk) this.loadedChunkHashMap_KC.rawThermos().get(p_73154_1_, p_73154_2_);
++        Chunk chunk = (Chunk) this.loadedChunkHashMap_KC.rawThermosMap().get(p_73154_1_, p_73154_2_);
 +        chunk = chunk == null ? (shouldLoadChunk() ? this.loadChunk(p_73154_1_, p_73154_2_) : this.defaultEmptyChunk) : chunk; // Cauldron handle forge server tick events and load the chunk within 5 seconds of the world being loaded (for chunk loaders)
 +
 +        if (chunk == this.defaultEmptyChunk)
@@ -527,7 +527,7 @@
 -                    this.chunksToUnload.remove(olong);
 -                    this.loadedChunkHashMap.remove(olong.longValue());
 +                    ForgeChunkManager.putDormantChunk(chunkcoordinates, chunk);
-+                    if(this.loadedChunkHashMap_KC.rawThermos().size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)){
++                    if(this.loadedChunkHashMap_KC.rawThermosMap().size() == 0 && ForgeChunkManager.getPersistentChunksFor(this.worldObj).size() == 0 && !DimensionManager.shouldLoadSpawn(this.worldObj.provider.dimensionId)){
 +                        DimensionManager.unloadWorld(this.worldObj.provider.dimensionId);
 +                        return currentChunkProvider.unloadQueuedChunks();
 +                    }
@@ -544,7 +544,7 @@
      public String makeString()
      {
 -        return "ServerChunkCache: " + this.loadedChunkHashMap.getNumHashElements() + " Drop: " + this.chunksToUnload.size();
-+        return "ServerChunkCache: " + this.loadedChunkHashMap_KC.rawThermos().size() + " Drop: " + this.chunksToUnload.size(); // Cauldron
++        return "ServerChunkCache: " + this.loadedChunkHashMap_KC.rawThermosMap().size() + " Drop: " + this.chunksToUnload.size(); // Cauldron
      }
  
      public List getPossibleCreatures(EnumCreatureType p_73155_1_, int p_73155_2_, int p_73155_3_, int p_73155_4_)
@@ -553,7 +553,7 @@
      public int getLoadedChunkCount()
      {
 -        return this.loadedChunkHashMap.getNumHashElements();
-+        return this.loadedChunkHashMap_KC.rawThermos().size(); // Cauldron
++        return this.loadedChunkHashMap_KC.rawThermosMap().size(); // Cauldron
      }
  
      public void recreateStructures(int p_82695_1_, int p_82695_2_) {}
@@ -569,7 +569,7 @@
 +
 +    public long lastAccessed(int x, int z)
 +    {
-+        Chunk c = this.loadedChunkHashMap_KC.rawThermos().get(x,z);
++        Chunk c = this.loadedChunkHashMap_KC.rawThermosMap().get(x,z);
 +        if(c == null)return 0;
 +        else return c.lastAccessedTick;
 +    }

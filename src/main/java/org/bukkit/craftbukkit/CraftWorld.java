@@ -264,7 +264,8 @@ public class CraftWorld implements World {
 
         world.theChunkProviderServer.chunksToUnload.remove(x, z);
         //net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_TH.get(LongHash.toLong(x, z));
-        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_KC.rawThermos().get(x,z); //Thermos replacement for line above
+        //net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_KC.rawThermos().get(x,z); //Thermos replacement for line above
+        net.minecraft.world.chunk.Chunk chunk = world.theChunkProviderServer.loadedChunkHashMap_KC.rawThermosMap().get(x,z); //Thermos Updated replacement for line above
 
         if (chunk == null) {
             world.timings.syncChunkLoadTimer.startTiming(); // Spigot

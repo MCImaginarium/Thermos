@@ -581,7 +581,7 @@
 +					}
 +				}
 +				ChunkProviderServer cps = (ChunkProviderServer) this.chunkProvider;
-+				return cps.loadedChunkHashMap_KC.rawThermos().bulkCheck(st);            	
++				return cps.loadedChunkHashMap_KC.rawThermosMap().bulkCheck(st);            	
 +			}
 +		}
 +		else
