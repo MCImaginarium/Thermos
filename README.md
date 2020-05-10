@@ -58,15 +58,15 @@ Please read the [guide](https://mcimaginarium.github.io//Thermos/contributing) o
   * You can use IDE or clone from console:
   `git clone https://github.com/mcimaginarium/Thermos.git`
 * Creating the workspace
-  * To create the workspace just run the command: `./gradlew setupCauldron`
-  * To create the patches with the changes made just run: `./gradlew genPatches`
+  * To create the workspace just run the command: `./gradlew -PforgeBuildNumber='1614' setupCauldron`
+  * To create the patches with the changes made just run: `./gradlew -PforgeBuildNumber='1614' genPatches`
 * Building
   * Before you can build you must first setup the workspace!
-  * To build just run the command: `./gradlew jar`
+  * To build just run the command: `./gradlew -PforgeBuildNumber='1614' installbundle`
   * All builds will be in `build/distributions`
 * Updating sources
   * Update sources: `git pull origin master`
-  * Recreate the workspace: `./gradlew clean setupCrucible`
+  * Recreate the workspace: `./gradlew -PforgeBuildNumber='1614' clean setupCrucible`
 All builds will be in `build/distributions`
 
 ---
