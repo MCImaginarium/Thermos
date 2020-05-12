@@ -1,12 +1,21 @@
 package thermos;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.cauldron.configuration.BoolSetting;
 import net.minecraftforge.cauldron.configuration.ConfigBase;
+import net.minecraftforge.cauldron.configuration.IntSetting;
 import net.minecraftforge.cauldron.configuration.Setting;
 import net.minecraftforge.cauldron.configuration.StringSetting;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
 
 public class ThermosConfig extends ConfigBase {
     public BoolSetting commandEnable = new BoolSetting(this, "command.enable", true, "Enable Thermos command");
@@ -19,6 +28,17 @@ public class ThermosConfig extends ConfigBase {
         
     public BoolSetting commonAllowNetherPortal = new BoolSetting(this, "common.allowNetherPortalBesidesOverworld", false, "Allow nether portals in dimensions besides overworld");
     
+    /**
+     * by xjboss<br>
+     * force using offline uuid when using bungee
+     */
+    public BoolSetting forceuseOfflineUUID=new BoolSetting(this,"uuid.forceUseOfflineUUID",false,"Force use offline uuid when using bungeecord or fake online mode");
+    /**
+     * by xjboss<br>
+     * offline uuid mode
+     */
+	public IntSetting uuidMode=new IntSetting(this,"uuid.mode",0,"Offline UUID Mode 0 is normal mode 1 is lowercase mode 2 is upcase mode");
+	
     public ThermosConfig() {
         super("thermos.yml", "thermos");
         register(commandEnable);
@@ -27,6 +47,8 @@ public class ThermosConfig extends ConfigBase {
         register(loggingMaterialInjection);
         register(loggingClientModList);
         register(commonAllowNetherPortal);
+		register(forceuseOfflineUUID);
+		register(uuidMode);
         register(opConsoleOnly);
         load();
     }
